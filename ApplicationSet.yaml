@@ -12,32 +12,23 @@ spec:
             targetRevision: HEAD
             path: apps/prometheus
             namespace: monitoring
+            helm:
+              valueFiles:
+                - values.yaml
           - name: grafana
             repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
             targetRevision: HEAD
             path: apps/grafana
             namespace: monitoring
+            helm:
+              valueFiles:
+                - values.yaml
           - name: frontend
             repoURL: https://github.com/AntonioJordan/cicdcompletelab-openshift
             targetRevision: HEAD
             path: helm-templates
             namespace: react-app
-  template:
-    metadata:
-      name: '{{name}}'
-    spec:
-      project: default
-      source:
-        repoURL: '{{repoURL}}'
-        targetRevision: '{{targetRevision}}'
-        path: '{{path}}'
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{namespace}}'
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - Replace=true
+            helm:
+              valueFiles:
+                - values.yaml
+  template: {}
