@@ -7,18 +7,18 @@ spec:
   generators:
     - list:
         elements:
-          - name: prometheus
-            repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
-            targetRevision: HEAD
-            path: apps/prometheus
-            namespace: monitoring
-            helm:
-              valueFiles:
-                - values.yaml
+          # - name: prometheus
+          #   repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
+          #   targetRevision: HEAD
+          #   path: apps/prometheus
+          #   namespace: monitoring
+          #   helm:
+          #     valueFiles:
+          #       - values.yaml
           - name: grafana
             repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
             targetRevision: HEAD
-            path: apps/grafana
+            path: apps
             namespace: monitoring
             helm:
               valueFiles:
@@ -31,4 +31,25 @@ spec:
             helm:
               valueFiles:
                 - values.yaml
-  template: {}
+  template:
+    metadata:
+      name: "{{name}}"
+    spec:
+      project: default
+      source:
+        repoURL: "{{repoURL}}"
+        targetRevision: "{{targetRevision}}"
+        path: "{{path}}"
+        helm:
+          valueFiles:
+            - "{{valueFiles}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - Replace=true
