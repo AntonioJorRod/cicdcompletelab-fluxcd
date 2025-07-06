@@ -1,35 +1,42 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: monitoring-application
+  name: default
   namespace: argocd
 spec:
   generators:
     - list:
         elements:
-          - name: prometheus
+          - appName: prometheus
             repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
-            targetRevision: HEAD
+            namespace: monitoring
             path: apps/prometheus
-            namespace: monitoring
-          - name: grafana
+            extraValues: |
+              {}
+          - appName: grafana
             repoURL: https://github.com/AntonioJordan/cicdcompletelab-argocd
-            targetRevision: HEAD
-            path: apps/grafana/
             namespace: monitoring
+            path: apps/grafana
+            extraValues: |
+              service:
+                type: NodePort
+                nodePort: 32000
+                enabled: true
+
   template:
     metadata:
-      name: "{{name}}"
+      name: "{{appName}}"
     spec:
       project: default
       source:
         repoURL: "{{repoURL}}"
-        targetRevision: "{{targetRevision}}"
+        targetRevision: HEAD
         path: "{{path}}"
-        plugin:
-          name: helm-custom
+        helm:
+          values: |
+            {{extraValues}}
       destination:
-        server: https://kubernetes.default.svc
+        name: in-cluster
         namespace: "{{namespace}}"
       syncPolicy:
         automated:
