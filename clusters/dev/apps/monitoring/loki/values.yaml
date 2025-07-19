@@ -30,7 +30,9 @@ loki:
     enable_api: true
   metrics:
     enabled: true
-    listen_address: 0.0.0.0:9095
+    prometheus:
+      listen_address: 0.0.0.0:3102
+      route_prefix: /metrics
 
 server:
   http_listen_port: 3100
@@ -70,3 +72,12 @@ write:
   replicas: 0
 chunksCache:
   allocatedMemory: 500
+
+metricsGenerator:
+  enabled: true
+
+service:
+  ports:
+    - name: prometheus-metrics
+      port: 3102
+      targetPort: 3102
