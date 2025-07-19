@@ -21,13 +21,12 @@ datasources:
         url: http://prometheus-server.monitoring.svc.cluster.local
         access: proxy
         isDefault: true
-      - name: Loki
+      - name: DS_LOKI
         type: loki
         url: http://loki.monitoring.svc.cluster.local:3100
         access: proxy
         isDefault: false
         editable: true
-
 
 dashboardProviders:
   dashboardproviders.yaml:
@@ -49,6 +48,14 @@ dashboardProviders:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/nginx
+      - name: loki
+        orgId: 1
+        folder: LOKI
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/loki
 
 extraVolumeMounts:
   - name: node-exporter-dashboard
@@ -56,6 +63,9 @@ extraVolumeMounts:
     readOnly: true
   - name: nginx-dashboard
     mountPath: /var/lib/grafana/dashboards/nginx
+    readOnly: true
+  - name: loki-dashboard
+    mountPath: /var/lib/grafana/dashboards/loki
     readOnly: true
 
 extraVolumes:
@@ -65,3 +75,6 @@ extraVolumes:
   - name: nginx-dashboard
     configMap:
       name: nginx-dashboard
+  - name: loki-dashboard
+    configMap:
+      name: loki-dashboard
