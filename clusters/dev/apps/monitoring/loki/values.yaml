@@ -48,8 +48,8 @@ singleBinary:
     size: 20Gi
   resources:
     requests:
-      cpu: "1"
-      memory: "2Gi"
+      cpu: "500m"
+      memory: "3Gi"
     limits:
       cpu: "2"
       memory: "4Gi"
@@ -71,10 +71,11 @@ read:
 write:
   replicas: 0
 chunksCache:
-  allocatedMemory: 500
-
+  allocatedMemory: 2048
+  
+#Util pero consume mucho así que lo dejamos en false
 metricsGenerator:
-  enabled: true
+  enabled: false
 
 service:
   ports:
